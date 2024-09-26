@@ -12,32 +12,38 @@ class BandMember(models.Model):
 
     name = models.CharField(max_length=100)
     """
-    The name of the band member. This field is a character field with a maximum length of 100 characters.
+    The name of the band member.
+
+    :type: CharField (max_length=100)
     """
 
     role = models.CharField(max_length=100)
     """
-    The role of the band member in the band (e.g., lead singer, guitarist). 
-    This field is a character field with a maximum length of 100 characters.
+    The role of the band member in the band (e.g., lead singer, guitarist).
+
+    :type: CharField (max_length=100)
     """
 
     image = models.ImageField(upload_to='band_members/')
     """
-    A profile image of the band member. The image file will be uploaded to the 'band_members/' directory.
+    A profile image of the band member.
+
+    :type: ImageField (upload_to='band_members/')
     """
 
     bio = models.TextField()
     """
     A biography of the band member, providing additional details about their background and contributions.
-    This field is a text field that can store a large amount of text.
+
+    :type: TextField
     """
 
     def __str__(self):
         """
         Return a string representation of the BandMember object.
 
-        This method returns the name of the band member, which is useful for display purposes
-        in the Django admin interface and other parts of the application.
+        :return: The name of the band member.
+        :rtype: str
         """
         return self.name
 
@@ -52,37 +58,44 @@ class Event(models.Model):
 
     title = models.CharField(max_length=200)
     """
-    The title of the event (e.g., 'Summer Concert'). This field is a character field with a maximum 
-    length of 200 characters.
+    The title of the event (e.g., 'Summer Concert').
+
+    :type: CharField (max_length=200)
     """
 
     description = models.TextField()
     """
-    A detailed description of the event, including any additional information or special notes. 
-    This field is a text field that can store a large amount of text.
+    A detailed description of the event, including any additional information or special notes.
+
+    :type: TextField
     """
 
     event_date = models.DateTimeField()
     """
-    The date and time when the event will take place. This field is a date-time field.
+    The date and time when the event will take place.
+
+    :type: DateTimeField
     """
 
     location = models.CharField(max_length=200)
     """
-    The location where the event will be held (e.g., 'City Hall'). This field is a character field with 
-    a maximum length of 200 characters.
+    The location where the event will be held (e.g., 'City Hall').
+
+    :type: CharField (max_length=200)
     """
 
     image = models.ImageField(upload_to='Events/')
     """
-    An event image of the event. The image file will be uploaded to the 'Events/' directory.
+    An image representing the event.
+
+    :type: ImageField (upload_to='Events/')
     """
 
     def __str__(self):
         """
         Return a string representation of the Event object.
 
-        This method returns the title of the event, which is useful for display purposes
-        in the Django admin interface and other parts of the application.
+        :return: The title of the event.
+        :rtype: str
         """
         return self.title
