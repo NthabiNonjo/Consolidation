@@ -13,7 +13,12 @@ def index(request):
     Render the home page of the band app.
 
     This view function handles requests to the root URL of the band app and renders the 'index.html'
-    template. It does not pass any additional context to the template.
+    template. It passes the list of the latest band members and events as context.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Rendered 'index.html' template with context data.
+    :rtype: HttpResponse
     """
     latest_band_member_list = BandMember.objects.order_by('id')
     latest_event_list = Event.objects.order_by('id')[:5]
@@ -26,10 +31,17 @@ def index(request):
 
 def event(request, event_id):
     """
-    Render the page displaying selected event.
+    Render the page displaying a selected event.
 
-    This view function retrieves one Event information from the database and renders the 'event.html' template,
+    This view function retrieves one event's information from the database and renders the 'event.html' template,
     passing the event as context.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :param event_id: The ID of the event to be displayed.
+    :type event_id: int
+    :return: Rendered 'event.html' template with event details.
+    :rtype: HttpResponse
     """
     selected_event = get_object_or_404(Event, pk=event_id)
     return render(request, 'band/event.html', {'event': selected_event})
@@ -40,37 +52,47 @@ def register(request):
     Handle user registration.
 
     This view function handles both displaying the registration form and processing form submissions.
-    - If the request method is POST, it means the form has been submitted. The view validates and saves the form,
-      then logs in the newly registered user and redirects them to the home page.
-    - If the request method is GET, it means the form should be displayed. A new, empty form is instantiated and
-      rendered in the 'register.html' template.
+
+    If the request method is POST, it validates and saves the form, logs in the user, and redirects to the home page.
+    If the request method is GET, it displays a new, empty registration form.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Rendered 'register.html' template with the form.
+    :rtype: HttpResponse
     """
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # Log the user in after registration
-            return redirect('index')  # Redirect to the home page after successful registration
+            login(request, user)
+            return redirect('index')
     else:
-        form = SignUpForm()  # Instantiate a new form for GET requests
+        form = SignUpForm()
     return render(request, 'band/register.html', {'form': form})
 
 
 def user_login(request):
     """
-        Render the login page.
-        Handles GET requests to display the login form and POST requests to authenticate the user.
-        On successful login, redirects to the URL specified in the 'next' parameter or defaults to 'polls:index'.
-        """
+    Handle user login.
+
+    This view function displays the login form and processes login form submissions.
+
+    If the request method is POST and the form is valid, the user is authenticated and logged in.
+    If the request method is GET, an empty login form is displayed.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Rendered 'login.html' template with the form or redirect to the specified URL on successful login.
+    :rtype: HttpResponse
+    """
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             next_url = request.POST.get('next', 'index')
-            return HttpResponseRedirect(
-                reverse(next_url)
-            )
+            return HttpResponseRedirect(reverse(next_url))
     else:
         form = AuthenticationForm()
 
@@ -81,29 +103,37 @@ def authenticate_user(request):
     """
     Handle user authentication (login).
 
-    This view function handles both displaying the login form and processing form submissions.
-    - If the request method is POST, it means the form has been submitted. The view validates the form,
-      logs in the user, and redirects them to the home page.
-    - If the request method is GET, it means the form should be displayed. A new, empty form is instantiated
-      and rendered in the 'login.html' template.
+    This view function processes both login form display and form submissions.
+
+    If the request method is POST and the form is valid, the user is authenticated, logged in, and redirected to the home page.
+    If the request method is GET, an empty login form is displayed.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Rendered 'login.html' template with the form or redirect to the home page on successful login.
+    :rtype: HttpResponse
     """
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)  # Log the user in after successful authentication
-            return redirect('home')  # Redirect to the home page after successful login
+            login(request, user)
+            return redirect('home')
     else:
-        form = AuthenticationForm()  # Instantiate a new form for GET requests
+        form = AuthenticationForm()
     return render(request, 'band/login.html', {'form': form})
 
 
 def sign_out(request):
-    print(request.user)
     """
-    Log out the user and redirect to the login page.
+    Log out the current user and redirect to the index page.
+
+    This view function logs out the current user and then redirects them to the home page.
+
+    :param request: The HTTP request object.
+    :type request: HttpRequest
+    :return: Redirect to the home page.
+    :rtype: HttpResponseRedirect
     """
     logout(request)
-    return HttpResponseRedirect(
-        reverse('index')
-    )
+    return HttpResponseRedirect(reverse('index'))
