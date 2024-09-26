@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="jumbotron w-75">
+            <!-- Login form for band members -->
+            <form method="post" action="{% url 'login' %}?next={{ request.GET.next }}">
+                <h1 class="display-4">Band member login</h1> <!-- Form heading -->
+                <p class="lead">Go ahead and login Roxtar!</p> <!-- Form instruction -->
+                <hr class="my-4">
+                {% csrf_token %} <!-- CSRF token for security -->
+                {{ form.as_p }} <!-- Render form fields as paragraphs -->
+                <p class="lead mt-3">
+                    <a href="{% url 'register' %}">Don't have an account? Register here</a> <!-- Link to registration page -->
+                </p>
+                <p class="lead">
+                    <!-- Submit button for the login form -->
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}The Roxtars{% endblock %}</title>
+    <!-- Bootstrap CSS for styling -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-between">
+        <div class="col-8">
+            <h2>The Roxtars</h2> <!-- Main heading for the band -->
+        </div>
+        <!-- Conditional rendering for authentication -->
+        {% if user.is_authenticated %}
+        <a type="button" class="btn btn-warning" href="{% url 'logout' %}" role="button">Logout</a>
+        {% else %}
+        <a type="button" class="btn btn-warning" href="{% url 'login' %}" role="button">Login</a>
+        {% endif %}
+    </div>
+    <div class="row justify-content-center mt-5">
+        {% if latest_event_list %}
+        <!-- Carousel for latest events -->
+        <div id="carouselExampleIndicators" class="carousel slide w-75 rounded" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for event in latest_event_list %}
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner rounded">
+                {% for event in latest_event_list %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img class="d-block w-100" src="{{ event.image.url }}" alt="{{ event.title }}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <!-- Link to event detail page -->
+                        <a class="btn btn-light" href="{% url 'event' event.id %}" role="button">{{ event.title }}</a>
+                        <p class="mt-2">{{ event.event_date }} - {{ event.location }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Carousel controls -->
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        {% else %}
+        <h1>No events</h1> <!-- Message when no events are available -->
+        {% endif %}
+    </div>
+    <div class="row justify-content-center mt-5">
+        <h6>Meet the members</h6> <!-- Subheading for band members section -->
+    </div>
+    <div class="row mt-1">
+        {% if latest_band_member_list %}
+        <!-- Loop through and display band members -->
+        {% for member in latest_band_member_list %}
+        <div class="col-4 pt-5 justify-content-center d-flex align-items-stretch">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{{ member.image.url }}" alt="{{ member.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ member.name }}</h5>
+                    <p class="card-text">{{ member.bio }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ member.role }}</li> <!-- Member role -->
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h1>No band members</h1> <!-- Message when no members are available -->
+        {% endif %}
+    </div>
+    <div class="row" style="height: 250px"></div> <!-- Spacer row -->
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
